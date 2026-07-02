@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: cajacusco-back-core
+    runtime: node
+    plan: free
+    region: oregon
+    repo: https://github.com/75535671-eng/back-core
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FIREBASE_PROJECT_ID
+        value: caja-cusco-ventas
+      # Crear en el Dashboard de Render (Secret File o env var):
+      # FIREBASE_SERVICE_ACCOUNT = JSON completo de la service account

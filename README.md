@@ -8,7 +8,7 @@ Incluye reglas de seguridad, Cloud Functions y scripts operativos que alimentan 
 
 ```
 back-core/
-├── package.json             # API HTTP para Koyeb (npm start)
+├── package.json             # API HTTP para Render (npm start)
 ├── api/                     # Servidor Express
 │   └── server.js
 ├── firestore.rules          # Reglas de acceso (RLS equivalente)
@@ -77,17 +77,19 @@ Ver `docs/CASOS_30_FIRESTORE.md` para detalle de los 30 casos académicos.
 
 > Las apps móvil y el front core leen Firestore directamente. Este repo es la capa de **reglas + lógica serverless + operaciones batch**.
 
-## API HTTP en Koyeb (gratis)
+## API HTTP en Render (gratis)
 
-Además de Firebase, puedes publicar la API REST en **Koyeb** (plan free):
+Publica la API REST en **Render** (plan Free, sin costo):
 
-Ver guía completa: [`docs/KOYEB.md`](docs/KOYEB.md)
+Guía paso a paso: [`docs/RENDER.md`](docs/RENDER.md)
 
 ```powershell
 npm install
 npm start
 # Local: http://localhost:8080/health
 ```
+
+También existe guía alternativa para Koyeb: [`docs/KOYEB.md`](docs/KOYEB.md)
 
 ## Repos relacionados
 

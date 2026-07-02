@@ -1,5 +1,7 @@
 # Desplegar Back Core API en Koyeb (gratis)
 
+> **Recomendado:** usa [Render](RENDER.md) (plan free, más simple). Esta guía queda como alternativa.
+
 Esta guía publica la **API HTTP** del repo `back-core` en [Koyeb](https://www.koyeb.com/) usando el plan **Free Instance** (1 servicio web gratuito).
 
 ## Qué va en Koyeb y qué no

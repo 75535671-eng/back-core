@@ -1,0 +1,12 @@
+{
+  "name": "cajacuso-seed-scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed:m7": "node seed_m7.mjs",
+    "seed:casos30": "node seed_casos_30.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}

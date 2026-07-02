@@ -1,0 +1,285 @@
+rules_version = '2';
+
+// Reglas Firestore — equivalente a RLS del HU (Supabase).
+// Copiar en Firebase Console → Firestore → Reglas.
+// Proyecto: caja-cusco-ventas
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function uid() {
+      return request.auth.uid;
+    }
+
+    function identityData() {
+      let pathUsuarios = /databases/$(database)/documents/usuarios/$(uid());
+      let pathAsesores = /databases/$(database)/documents/asesores_negocio/$(uid());
+      return exists(pathUsuarios)
+        ? get(pathUsuarios).data
+        : (exists(pathAsesores) ? get(pathAsesores).data : {});
+    }
+
+    function perfil() {
+      let d = identityData();
+      let raw = d.get('perfil', d.get('rol', 'operador'));
+      return raw == 'superOperador' ? 'super_operador' : raw;
+    }
+
+    function agenciaId() {
+      return identityData().get('agenciaId', 'AG001');
+    }
+
+    function isOperador() {
+      return perfil() in ['operador', 'super_operador'];
+    }
+
+    function isSupervisor() {
+      return perfil() == 'supervisor';
+    }
+
+    function isAdmin() {
+      return perfil() == 'administrador';
+    }
+
+    function ownsAsesor(asesorId) {
+      return isAuth() && uid() == asesorId;
+    }
+
+    function sameAgencia(docAgencia) {
+      return agenciaId() == docAgencia;
+    }
+
+    // ── Portal cliente (misma BD, colecciones aditivas) ──
+    function isStaff() {
+      return exists(/databases/$(database)/documents/usuarios/$(uid()))
+        || exists(/databases/$(database)/documents/asesores_negocio/$(uid()));
+    }
+
+    function isCliente() {
+      return exists(/databases/$(database)/documents/cuentas_clientes/$(uid()));
+    }
+
+    function myClienteId() {
+      return get(/databases/$(database)/documents/cuentas_clientes/$(uid())).data.clienteId;
+    }
+
+    function validDni(dni) {
+      return dni is string && dni.size() == 8 && dni.matches('^[0-9]+$');
+    }
+
+    function cuentaPropiaValida() {
+      return request.resource.data.authUid == uid()
+        && request.resource.data.activo == true
+        && validDni(request.resource.data.numeroDocumento)
+        && request.resource.data.clienteId is string
+        && exists(/databases/$(database)/documents/clientes/$(request.resource.data.clienteId));
+    }
+
+    // ── Identidad ──
+    match /asesores_negocio/{docId} {
+      allow read: if isAuth() && (
+        uid() == docId ||
+        resource.data.get('userId', '') == uid() ||
+        isSupervisor() ||
+        isAdmin()
+      );
+      allow write: if false;
+    }
+
+    match /usuarios/{docId} {
+      allow read: if isAuth() && (
+        uid() == docId ||
+        resource.data.get('userId', '') == uid() ||
+        isSupervisor() ||
+        isAdmin()
+      );
+      allow update: if isAdmin();
+      allow create, delete: if false;
+    }
+
+    match /agencias/{id} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ── Clientes y créditos ──
+    match /clientes/{id} {
+      allow read: if isAuth();
+      allow create, update: if isAuth() && isStaff() && isOperador();
+      allow create: if isAuth() && !isStaff() && !isCliente()
+        && validDni(request.resource.data.numeroDocumento)
+        && request.resource.data.registroApp == true
+        && request.resource.data.keys().hasAll(['numeroDocumento', 'nombres', 'apellidos', 'telefono']);
+      allow update: if isAuth() && isCliente() && id == myClienteId()
+        && !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['numeroDocumento', 'registroApp']);
+    }
+
+    match /creditos/{id} {
+      allow read: if isAuth() && (
+        isAdmin() ||
+        (isSupervisor() && sameAgencia(resource.data.agenciaId)) ||
+        ownsAsesor(resource.data.asesorId) ||
+        (isCliente() && resource.data.clienteId == myClienteId())
+      );
+      allow write: if isAuth() && ownsAsesor(request.resource.data.asesorId);
+    }
+
+    match /creditos_preaprobados/{id} {
+      allow read: if isAuth() && ownsAsesor(resource.data.asesorId);
+      allow write: if false;
+    }
+
+    // ── Operación en campo ──
+    match /cartera_diaria/{id} {
+      allow read: if isAuth() && (
+        ownsAsesor(resource.data.asesorId) ||
+        isAdmin() ||
+        (isSupervisor() && sameAgencia(resource.data.agenciaId))
+      );
+      allow create: if isAuth() && ownsAsesor(request.resource.data.asesorId);
+      allow update, delete: if isAuth() && (
+        ownsAsesor(resource.data.asesorId) || isAdmin()
+      );
+    }
+
+    match /solicitudes_credito/{id} {
+      allow read: if isAuth() && (
+        ownsAsesor(resource.data.asesorId) ||
+        (isSupervisor() && sameAgencia(resource.data.agenciaId)) ||
+        isAdmin() ||
+        (isCliente() && resource.data.clienteId == myClienteId())
+      );
+      allow create: if isAuth() && ownsAsesor(request.resource.data.asesorId);
+      allow update: if isAuth() && ownsAsesor(resource.data.asesorId);
+    }
+
+    match /solicitudes_documentos/{id} {
+      allow read, write: if isAuth();
+    }
+
+    match /consultas_buro/{id} {
+      allow read: if isAuth() && (isAdmin() || isSupervisor() || ownsAsesor(resource.data.asesorId));
+      allow create: if isAuth() && ownsAsesor(request.resource.data.asesorId);
+    }
+
+    match /acciones_cobranza/{id} {
+      allow read, create: if isAuth() && ownsAsesor(request.resource.data.asesorId);
+    }
+
+    match /alertas_cartera/{id} {
+      allow read, update: if isAuth() && ownsAsesor(resource.data.asesorId);
+      allow create: if false;
+    }
+
+    match /solicitudes_notas_internas/{id} {
+      allow read, create: if isAuth() && ownsAsesor(request.resource.data.asesorId);
+    }
+
+    // ── Extensiones app ──
+    match /buro_crediticio/{id} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    match /listas_restriccion/{id} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    match /notificaciones/{id} {
+      allow read, update: if isAuth() && resource.data.usuarioId == uid();
+      allow create: if isAuth();
+    }
+
+    match /envios_solicitudes/{id} {
+      allow read, write: if isAuth();
+    }
+
+    match /ubicaciones_asesores/{id} {
+      allow read: if isAuth();
+      allow write: if isAuth();
+    }
+
+    match /productividad_mensual/{id} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    match /cartera_vencida/{id} {
+      allow read: if isAuth() && ownsAsesor(resource.data.asesorId);
+      allow write: if false;
+    }
+
+    match /recordatorios_cobranza/{id} {
+      allow read, write: if isAuth();
+    }
+
+    match /campanas_activas/{id} {
+      allow read: if isAuth() && ownsAsesor(resource.data.asesorId);
+      allow write: if false;
+    }
+
+    match /movimientos/{id} {
+      allow read: if isAuth() && ownsAsesor(resource.data.asesorId);
+      allow write: if false;
+    }
+
+    match /zonas/{id} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    match /prospectos/{id} {
+      allow read, create, update: if isAuth() && ownsAsesor(resource.data.asesorId);
+    }
+
+    match /preEvaluaciones/{id} {
+      allow read, write: if isAuth();
+    }
+
+    match /clientes_desertores/{id} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    match /solicitudes_historial/{id} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    match /verificaciones_clientes/{id} {
+      allow read, write: if isAuth();
+    }
+
+    match /simulaciones_credito/{id} {
+      allow read, write: if isAuth();
+    }
+
+    // ── Portal cliente (colecciones nuevas, no alteran datos existentes) ──
+    match /clientes_por_dni/{dni} {
+      allow get: if validDni(dni);
+      allow create: if isAuth() && !isCliente() && validDni(dni)
+        && request.resource.data.clienteId is string
+        && request.resource.data.numeroDocumento == dni;
+      allow update: if isAuth() && !isCliente() && validDni(dni);
+      allow delete: if false;
+    }
+
+    match /cuentas_clientes/{docId} {
+      allow read: if isAuth() && (uid() == docId || isAdmin() || isSupervisor());
+      allow create: if isAuth() && uid() == docId
+        && !exists(/databases/$(database)/documents/cuentas_clientes/$(uid()))
+        && cuentaPropiaValida();
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "buro_crediticio": [
+    {
+      "id": "buro_45217896",
+      "documento": "45217896",
+      "calificacionSbs": "NORMAL",
+      "entidadesConDeuda": 2,
+      "deudaTotal": 15400,
+      "mayorDeudaIndividual": 9800,
+      "diasMayorMora": 0,
+      "nota": "Juan Quispe Mamani — semáforo VERDE"
+    },
+    {
+      "id": "buro_70123456",
+      "documento": "70123456",
+      "calificacionSbs": "CPP",
+      "entidadesConDeuda": 3,
+      "deudaTotal": 28500,
+      "mayorDeudaIndividual": 15000,
+      "diasMayorMora": 15,
+      "nota": "Rosa Huamán Condori — semáforo AMARILLO"
+    },
+    {
+      "id": "buro_47891234",
+      "documento": "47891234",
+      "calificacionSbs": "NORMAL",
+      "entidadesConDeuda": 0,
+      "deudaTotal": 0,
+      "mayorDeudaIndividual": 0,
+      "diasMayorMora": 0,
+      "nota": "Carlos Mendoza López — sin deuda, VERDE"
+    },
+    {
+      "id": "buro_72345678",
+      "documento": "72345678",
+      "calificacionSbs": "NORMAL",
+      "entidadesConDeuda": 1,
+      "deudaTotal": 5200,
+      "mayorDeudaIndividual": 5200,
+      "diasMayorMora": 0,
+      "nota": "Ana Flores García — VERDE"
+    },
+    {
+      "id": "buro_40987654",
+      "documento": "40987654",
+      "calificacionSbs": "DEFICIENTE",
+      "entidadesConDeuda": 2,
+      "deudaTotal": 62000,
+      "mayorDeudaIndividual": 45000,
+      "diasMayorMora": 95,
+      "nota": "Pedro Soto Ríos — mora alta, semáforo ROJO"
+    },
+    {
+      "id": "buro_61234567",
+      "documento": "61234567",
+      "calificacionSbs": "DUDOSO",
+      "entidadesConDeuda": 4,
+      "deudaTotal": 88000,
+      "mayorDeudaIndividual": 35000,
+      "diasMayorMora": 120,
+      "nota": "Lucía Mamani Apaza — también en lista negra"
+    },
+    {
+      "id": "buro_12345678",
+      "documento": "12345678",
+      "calificacionSbs": "NORMAL",
+      "entidadesConDeuda": 2,
+      "deudaTotal": 15400,
+      "mayorDeudaIndividual": 9800,
+      "diasMayorMora": 0,
+      "nota": "Ejemplo académico del RF-58"
+    }
+  ],
+  "listas_restriccion": [
+    {
+      "id": "restriccion_61234567",
+      "documento": "61234567",
+      "tipoRestriccion": "LISTA_NEGRA_INTERNA",
+      "motivo": "Fraude documentario detectado en expediente previo",
+      "activa": true,
+      "nota": "Lucía Mamani Apaza — cliente BLOQUEADO"
+    },
+    {
+      "id": "restriccion_87654321",
+      "documento": "87654321",
+      "tipoRestriccion": "LISTA_NEGRA_INTERNA",
+      "motivo": "Identidad falsificada reportada por área de fraude",
+      "activa": true,
+      "nota": "Documento extra para pruebas manuales"
+    },
+    {
+      "id": "restriccion_inactiva",
+      "documento": "45217896",
+      "tipoRestriccion": "LISTA_NEGRA_INTERNA",
+      "motivo": "Restricción levantada tras regularización",
+      "activa": false,
+      "nota": "No bloquea — activa debe ser false"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "ubicaciones_asesores": [
+    {
+      "id": "ubic_demo_0101",
+      "asesorId": "demo-0101",
+      "asesorNombre": "Juan Quispe",
+      "agenciaId": "AG001",
+      "latitud": -13.518,
+      "longitud": -71.977,
+      "nota": "Operador AG001 — cerca Plaza de Armas"
+    },
+    {
+      "id": "ubic_demo_0202",
+      "asesorId": "demo-0202",
+      "asesorNombre": "Rosa Huamán",
+      "agenciaId": "AG001",
+      "latitud": -13.525,
+      "longitud": -71.96,
+      "nota": "Super operador AG001 — zona San Blas"
+    },
+    {
+      "id": "ubic_demo_0303",
+      "asesorId": "demo-0303",
+      "asesorNombre": "Carlos Mendoza",
+      "agenciaId": "AG002",
+      "latitud": -13.54,
+      "longitud": -71.975,
+      "nota": "Asesor AG002 — zona Wanchaq"
+    }
+  ],
+  "productividad_mensual": [
+    {
+      "id": "prod_2026_06_0101",
+      "asesorId": "demo-0101",
+      "asesorNombre": "Juan Quispe",
+      "agenciaId": "AG001",
+      "mes": 6,
+      "anio": 2026,
+      "solicitudesEnviadas": 42,
+      "solicitudesAprobadas": 30,
+      "solicitudesDesembolsadas": 25,
+      "montoTotalAprobado": 185000,
+      "tasaAprobacion": 71.4,
+      "nota": "Mejor volumen AG001"
+    },
+    {
+      "id": "prod_2026_06_0202",
+      "asesorId": "demo-0202",
+      "asesorNombre": "Rosa Huamán",
+      "agenciaId": "AG001",
+      "mes": 6,
+      "anio": 2026,
+      "solicitudesEnviadas": 38,
+      "solicitudesAprobadas": 22,
+      "solicitudesDesembolsadas": 18,
+      "montoTotalAprobado": 142000,
+      "tasaAprobacion": 57.9,
+      "nota": "Tasa moderada AG001"
+    },
+    {
+      "id": "prod_2026_06_0303",
+      "asesorId": "demo-0303",
+      "asesorNombre": "Carlos Mendoza",
+      "agenciaId": "AG002",
+      "mes": 6,
+      "anio": 2026,
+      "solicitudesEnviadas": 35,
+      "solicitudesAprobadas": 28,
+      "solicitudesDesembolsadas": 24,
+      "montoTotalAprobado": 210000,
+      "tasaAprobacion": 80.0,
+      "nota": "Mejor tasa AG002"
+    },
+    {
+      "id": "prod_2026_05_0101",
+      "asesorId": "demo-0101",
+      "asesorNombre": "Juan Quispe",
+      "agenciaId": "AG001",
+      "mes": 5,
+      "anio": 2026,
+      "solicitudesEnviadas": 36,
+      "solicitudesAprobadas": 24,
+      "solicitudesDesembolsadas": 20,
+      "montoTotalAprobado": 152000,
+      "tasaAprobacion": 66.7,
+      "nota": "Mes anterior — comparar tendencia"
+    }
+  ],
+  "cartera_diaria_resumen": [
+    {
+      "id": "cobertura_demo_0101_hoy",
+      "asesorId": "demo-0101",
+      "asesorNombre": "Juan Quispe",
+      "agenciaId": "AG001",
+      "visitasAsignadas": 6,
+      "visitasRealizadas": 5,
+      "nota": "83% cobertura hoy"
+    },
+    {
+      "id": "cobertura_demo_0202_hoy",
+      "asesorId": "demo-0202",
+      "asesorNombre": "Rosa Huamán",
+      "agenciaId": "AG001",
+      "visitasAsignadas": 5,
+      "visitasRealizadas": 2,
+      "nota": "40% cobertura hoy"
+    },
+    {
+      "id": "cobertura_demo_0303_hoy",
+      "asesorId": "demo-0303",
+      "asesorNombre": "Carlos Mendoza",
+      "agenciaId": "AG002",
+      "visitasAsignadas": 4,
+      "visitasRealizadas": 4,
+      "nota": "100% cobertura hoy"
+    }
+  ]
+}
